@@ -21,12 +21,14 @@ class Game extends Component {
         this.currentGame = [];
         this.notesSelected = [];
         this.round = 0;
+        this.score=0;
     }
 
     //Quand le joueur clique sur New game
     newGame = () => {
         this.currentGame = [];
         this.notesSelected = [];
+        this.score=0;
         this.setState({ error: false });
         this.play()
     }
@@ -39,6 +41,7 @@ class Game extends Component {
             this.currentGame.push(note)
             this.notesToPlay()
         }
+        console.log('play', this.currentGame.length)
     }
     //Notes à jouer sans se tromper
     notesToPlay = () => {
@@ -60,9 +63,8 @@ class Game extends Component {
                 this.setState({ currentNote: 'none' });
             }, 300);
         }, 600);
-        this.round = 0;
         this.notesSelected = [];
-
+        this.round = 0;
     }
 
     //Notes jouées par le joueur
@@ -75,33 +77,30 @@ class Game extends Component {
             let good = undefined;
             audio.play();
 
-            
             if (this.notesSelected[this.round] === this.currentGame[this.round]) {
-                for (let i = 0; i < this.notesSelected.length; i += 1) {
-                    console.log('taille:', this.currentGame.length, 'note selcted:', this.notesSelected[this.round], 'note à jouer:', this.currentGame[this.round],  'round:', this.round)
+                    console.log('taille:', this.currentGame.length, 'note selcted:', this.notesSelected[this.round], 'note à jouer:', this.currentGame[this.round], 'round:', this.round)
                     this.round += 1;
                     if (this.round === this.currentGame.length) {
                         console.log('You win !', this.currentGame, this.currentGame.length, 'round', this.round)
                         good = true;
                     }
-                }
             } else {
-                console.log('You loose !', this.currentGame, this.currentGame.length, 'round', this.round)
-
                 good = false;
             }
 
             if (good) {
-                this.notesSelected = [];
+                // this.notesSelected = [];
+                // this.round = 0;
+                this.score+=1;
                 this.play()
             }
             if (good === false) {
-                console.log('You lose !', this.currentGame)
+                console.log('You lose !', this.currentGame, this.notesSelected)
                 this.round = 0;
+                this.notesSelected = [];
                 this.setState({ error: true });
                 const error = new Audio("./error.wav")
                 error.play()
-                this.notesSelected = [];
             }
         }
     }
@@ -138,6 +137,7 @@ class Game extends Component {
         return (
             <div className="gameContainer">
                 <h1>My Simon game</h1>
+                <p style={{color:'white'}}>Score: {this.score}</p>
                 <div className="simonContainer">
                     <Container>
                         <Row>
