@@ -20,6 +20,7 @@ class Game extends Component {
         }
         this.currentGame = [];
         this.notesSelected = [];
+        this.round = 0;
     }
 
     //Quand le joueur clique sur New game
@@ -59,6 +60,8 @@ class Game extends Component {
                 this.setState({ currentNote: 'none' });
             }, 300);
         }, 600);
+        this.round = 0;
+        this.notesSelected = [];
 
     }
 
@@ -71,25 +74,30 @@ class Game extends Component {
             this.notesSelected.push(note);
             let good = undefined;
             audio.play();
-            if (this.notesSelected.length === this.currentGame.length) {
-                for (let i = 0; i < this.currentGame.length; i += 1) {
-                    if (this.notesSelected[i] === this.currentGame[i]) {
-                        console.log('todo', this.currentGame[i])
-                        console.log('done', this.notesSelected[i])
+
+            
+            if (this.notesSelected[this.round] === this.currentGame[this.round]) {
+                for (let i = 0; i < this.notesSelected.length; i += 1) {
+                    console.log('taille:', this.currentGame.length, 'note selcted:', this.notesSelected[this.round], 'note à jouer:', this.currentGame[this.round],  'round:', this.round)
+                    this.round += 1;
+                    if (this.round === this.currentGame.length) {
+                        console.log('You win !', this.currentGame, this.currentGame.length, 'round', this.round)
                         good = true;
-                    } else {
-                        good = false;
-                        break;
                     }
                 }
+            } else {
+                console.log('You loose !', this.currentGame, this.currentGame.length, 'round', this.round)
+
+                good = false;
             }
+
             if (good) {
-                console.log('You win !', this.currentGame)
                 this.notesSelected = [];
                 this.play()
-            } 
+            }
             if (good === false) {
                 console.log('You lose !', this.currentGame)
+                this.round = 0;
                 this.setState({ error: true });
                 const error = new Audio("./error.wav")
                 error.play()
@@ -97,6 +105,33 @@ class Game extends Component {
             }
         }
     }
+
+    //     if (this.notesSelected.length === this.currentGame.length) {
+    //         for (let i = 0; i < this.currentGame.length; i += 1) {
+    //             if (this.notesSelected[i] === this.currentGame[i]) {
+    //                 console.log('todo', this.currentGame[i])
+    //                 console.log('done', this.notesSelected[i])
+    //                 good = true;
+    //             } else {
+    //                 good = false;
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     if (good) {
+    //         console.log('You win !', this.currentGame)
+    //         this.notesSelected = [];
+    //         this.play()
+    //     } 
+    //     if (good === false) {
+    //         console.log('You lose !', this.currentGame)
+    //         this.setState({ error: true });
+    //         const error = new Audio("./error.wav")
+    //         error.play()
+    //         this.notesSelected = [];
+    //     }
+    //     // }
+    // }
 
     render() {
         const { currentNote, error } = this.state;
@@ -114,8 +149,8 @@ class Game extends Component {
                             <Col xs={{ size: 5 }}>
                                 <Circle color="green" play={this.playerMove} note={currentNote} colorObj={this.color} />
                             </Col>
-                            <Col xs={{ size: 2 }} style={{display: 'flex', alignItems:'center'}}>
-                               { error ? <Error tryAgain={this.notesToPlay}/> : undefined}
+                            <Col xs={{ size: 2 }} style={{ display: 'flex', alignItems: 'center' }}>
+                                {error ? <Error tryAgain={this.notesToPlay} /> : undefined}
                             </Col>
                             <Col xs={{ size: 5 }}>
                                 <Circle color="red" play={this.playerMove} note={currentNote} colorObj={this.color} />
@@ -128,7 +163,7 @@ class Game extends Component {
                         </Row>
                     </Container>
                 </div>
-                <button onClick={() => this.newGame()} style={{marginTop: '3%'}}>New game</button>
+                <button onClick={() => this.newGame()} style={{ marginTop: '3%' }}>New game</button>
             </div>
         );
     }

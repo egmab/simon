@@ -1,7 +1,7 @@
 .simonContainer button {
     padding: 50px;
     /* border-radius: 50%; */
-    border-radius: 12% 12% 50% 50%;
+    border-radius: 50%;
 }
 .simonContainer button:focus {
     outline: 0;
